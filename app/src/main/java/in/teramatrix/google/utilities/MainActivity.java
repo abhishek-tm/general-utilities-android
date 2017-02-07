@@ -21,6 +21,7 @@ import in.teramatrix.utilities.model.Distance;
 import in.teramatrix.utilities.model.Place;
 import in.teramatrix.utilities.model.TravelMode;
 import in.teramatrix.utilities.service.DistanceCalculator;
+import in.teramatrix.utilities.service.Geocoder;
 import in.teramatrix.utilities.service.LocationHandler;
 import in.teramatrix.utilities.service.Locator;
 import in.teramatrix.utilities.service.PlacesExplorer;
@@ -55,6 +56,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager manager = getSupportFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Geocoder geocoder = new Geocoder();
+        geocoder.setResponseListener(new Geocoder.GeocodingListener() {
+            @Override
+            public void onRequestCompleted(String json, LatLng latLng) {
+                // Returned JSON response and LatLng object
+            }
+
+            @Override
+            public void onRequestFailure(Exception e) {
+                // handle exception here
+            }
+        });
+        geocoder.execute();
     }
 
     @Override

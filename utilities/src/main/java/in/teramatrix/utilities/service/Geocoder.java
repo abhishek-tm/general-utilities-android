@@ -60,7 +60,7 @@ public class Geocoder extends AsyncTask<String, Void, LatLng> {
         LatLng geocoded = new LatLng(0,0);
 
         //If nothing to geo code
-        if (params[0].equals("")) return geocoded;
+        if (params.length <= 0 || params[0].equals("")) return geocoded;
 
         try {
             Request request = new Request.Builder().url(UrlManager.getGeoCodingApiUrl(params[0])).build();
