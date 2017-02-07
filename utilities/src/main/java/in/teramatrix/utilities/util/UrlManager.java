@@ -70,7 +70,7 @@ public class UrlManager {
     /**
      * This method will construct the URL to approach to the Google Server for Google's Direction Matrix API.
      * <br/>
-     * See <a href="https://developers.google.com/maps/documentation/distance-matrix/intro#Introduction">Google Maps Distance Matrix API</a>
+     * See <a href="https://developers.google.com/maps/documentation/directions/start">Google Maps Directions API</a>
      * @param points an array of waypoints
      * @return url
      */

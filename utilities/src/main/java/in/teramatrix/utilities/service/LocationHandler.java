@@ -292,6 +292,8 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
             mLocationListener.onLocationChanged(location);
             updateLastLocation(location);
         }
+
+        log(location.getLatitude() + "," + location.getLongitude());
     }
 
     /**
