@@ -42,18 +42,18 @@ dependencies {
 Using this library Geocoding can be done synchronously as following…
 
 ```java
-    Geocoder geocoder = new Geocoder();
-    geocoder.setResponseListener(new Geocoder.GeocodingListener() {
-        @Override
-        public void onRequestCompleted(String json, LatLng latLng) {
-            // Returned JSON response and LatLng object
-        }
+Geocoder geocoder = new Geocoder();
+geocoder.setResponseListener(new Geocoder.GeocodingListener() {
+    @Override
+    public void onRequestCompleted(String json, LatLng latLng) {
+        // Returned JSON response and LatLng object
+    }
 
-        @Override
-        public void onRequestFailure(Exception e) {
-            // handle exception here
-        }
-    });
+    @Override
+    public void onRequestFailure(Exception e) {
+        // handle exception here
+    }
+});
     geocoder.execute("New Delhi, India");
 ```
 
