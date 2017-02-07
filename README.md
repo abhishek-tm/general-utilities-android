@@ -38,6 +38,9 @@ dependencies {
 ```
 
 ### Geocoder
+Geocoding is the process of converting addresses (like "1600 Amphitheatre Parkway, Mountain View, CA") into geographic coordinates (like latitude 37.423021 and longitude -122.083739),
+which you can use to place markers on a map, or position the map.
+Just pass your address to `execute()` method, it will publish result in `onRequestCompleted()`.
 
 ```java
 Geocoder geocoder = new Geocoder();
@@ -73,6 +76,55 @@ reverseGeocoder.setResponseListener(new ReverseGeocoder.ReverseGeocodingListener
 reverseGeocoder.execute(new LatLng(26.896079, 75.744542));
 ```
 
+### Places Explorer
+
+```java
+PlacesExplorer explorer = new PlacesExplorer()
+    .setKey(BROWSER_KEY)
+    .setLocation(new LatLng(26.4498954, 74.6399163))
+    .setResponseListener(new PlacesExplorer.PlaceExplorerListener() {
+        @Override
+        public void onRequestCompleted(String json, ArrayList<Place> places) {
+            // All available places as an array list of place objects
+            for (Place place : places) Log.e("PLACE", place.toString());
+        }
+
+        @Override
+        public void onRequestFailure(Exception e) {
+            // handle exception here
+        }
+});
+explorer.explore("bank", "atm");
+```
+
+### Route Designer
+
+```java
+new RouteDesigner(this, map)
+    .setOrigin(new LatLng(26.926106, 75.792809))
+    .setDestination(new LatLng(26.449743, 74.704028))
+    .design();
+```
+
+### Distance Calculator
+
+```java
+DistanceCalculator calculator = new DistanceCalculator()
+    .setOrigins("Ajmer, Rajasthan")
+    .setServerKey(SERVER_KEY)
+    .setResponseListener(new DistanceCalculator.DistanceListener() {
+        @Override
+        public void onRequestCompleted(String json, ArrayList<Distance> distances) {
+            for (Distance distance : distances) Log.e("DISTANCE", distance.toString());
+        }
+
+        @Override
+        public void onRequestFailure(Exception e) {
+            Log.e("DISTANCE", e.getMessage());
+        }
+});
+calculator.execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
+```
 
 ### Licence
 

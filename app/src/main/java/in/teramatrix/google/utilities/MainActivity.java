@@ -58,20 +58,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager manager = getSupportFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
-        reverseGeocoder.setResponseListener(new ReverseGeocoder.ReverseGeocodingListener() {
-            @Override
-            public void onRequestCompleted(String json, Address address) {
-                // Returned JSON response and Address object
-            }
-
-            @Override
-            public void onRequestFailure(Exception e) {
-                // handle exception here
-            }
-        });
-        reverseGeocoder.execute(new LatLng(26.896079, 75.744542));
     }
 
     @Override
@@ -130,6 +116,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //Tested
     private void callRouteDesignerDirect() {
+        DistanceCalculator calculator = new DistanceCalculator()
+                .setOrigins("Ajmer, Rajasthan")
+                .setServerKey(SERVER_KEY)
+                .setResponseListener(new DistanceCalculator.DistanceListener() {
+                    @Override
+                    public void onRequestCompleted(String json, ArrayList<Distance> distances) {
+                        for (Distance distance : distances) Log.e("DISTANCE", distance.toString());
+                    }
+
+                    @Override
+                    public void onRequestFailure(Exception e) {
+                        Log.e("DISTANCE", e.getMessage());
+                    }
+                });
+        calculator.execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
+
         RouteDesigner designer = new RouteDesigner(this, map)
                 .setSensor(false)
                 .setAutoZoom(true)
@@ -166,6 +168,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     }
                 });
-        explorer.explore("mosque", "hindu_temple");
+        explorer.explore("bank", "atm");
     }
 }
