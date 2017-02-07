@@ -42,7 +42,8 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
     private Context context;
 
     /**
-     * For a quick access to the last known / most recent location
+     * For a quick access to the last known / most recent location, and for the filters and comparison with
+     * latest / current location.
      */
     @SuppressWarnings("WeakerAccess")
     public static Location lastLocation;
