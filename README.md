@@ -54,7 +54,7 @@ geocoder.setResponseListener(new Geocoder.GeocodingListener() {
         // handle exception here
     }
 });
-    geocoder.execute("New Delhi, India");
+geocoder.execute("New Delhi, India");
 ```
 
 ### Licence
