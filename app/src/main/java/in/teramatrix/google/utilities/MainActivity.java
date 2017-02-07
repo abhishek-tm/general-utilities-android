@@ -91,6 +91,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setFillColor("#3273b7ff")
                 .setStrokeColor("#4487f2");
         locator.locateMe(this);
+
+        new LocationHandler(this)
+            .setLocationListener(new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                // Get the best known location
+            }
+        }).start();
     }
 
     //Tested
@@ -155,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //Tested
     private void callPlacesExplorerDirect() {
-        new PlacesExplorer()
+        PlacesExplorer explorer = new PlacesExplorer()
                 .setKey(BROWSER_KEY)
                 .setLocation(new LatLng(26.4498954, 74.6399163))
                 .setResponseListener(new PlacesExplorer.PlaceExplorerListener() {
@@ -168,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onRequestFailure(Exception e) {
 
                     }
-                }).explore("bank", "atm");
+                });
+        explorer.explore("bank", "atm");
     }
 }

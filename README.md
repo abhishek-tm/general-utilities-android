@@ -102,6 +102,7 @@ new PlacesExplorer()
 ```
 
 ### Route Designer
+To design route with polyilne on Google Map between two points, use this simple code snippet with default configuration.
 
 ```java
 new RouteDesigner(this, map)
@@ -111,6 +112,11 @@ new RouteDesigner(this, map)
 ```
 
 ### Distance Calculator
+The Google Maps Distance Matrix API returns information based on the recommended route between start and end points,
+as calculated by the Google Maps API, and consists of rows containing duration and distance values for each pair.
+Set origin using `setOrigin()` method and destination will be inserted in `execute()` method.
+
+In this version, origin will be single and destination may be multiple.
 
 ```java
 new DistanceCalculator()
@@ -127,6 +133,19 @@ new DistanceCalculator()
             Log.e("DISTANCE", e.getMessage());
         }
     }).execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
+```
+
+### Location Handler
+Using Google's Fused location API, get the best known location of the device in simple steps.
+
+```java
+new LocationHandler(this)
+    .setLocationListener(new LocationListener() {
+    @Override
+    public void onLocationChanged(Location location) {
+        // Get the best known location
+    }
+}).start();
 ```
 
 ### Licence
