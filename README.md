@@ -7,9 +7,32 @@ In this module, we've included following APIs...
 
 * [Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#BYB)
 * [Reverse Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding)
-* <a href="https://developers.google.com/places/place-id#example-using-the-places-api-web-service">Places API</a>
-* <a href="https://developers.google.com/maps/documentation/directions/start">Directions API</a>
-* <a href="https://developers.google.com/maps/documentation/distance-matrix/intro#Introduction">Distance Matrix API</a>
-* <a href="https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderApi#top_of_page">Fused Location Provider Api</a>
-* <a href="https://developers.google.com/analytics/devguides/collection/android/v4/#set-up-your-project">Google Analytics</a>
+* [Places API] (https://developers.google.com/places/place-id#example-using-the-places-api-web-service)
+* [Directions API] (https://developers.google.com/maps/documentation/directions/start)
+* [Distance Matrix API] (https://developers.google.com/maps/documentation/distance-matrix/intro#Introduction)
+* [Fused Location Provider Api] (https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderApi#top_of_page)
+* [Google Analytics] (https://developers.google.com/analytics/devguides/collection/android/v4/#set-up-your-project)
 * And some other features.
+
+### Importing the Library
+
+Simply add the following repositories to your project level `build.gradle` file:
+
+```groovy
+allprojects {
+    repositories {
+        jcenter()
+
+        maven {
+            url = 'https://jitpack.io'
+        }
+    }
+}
+```
+
+And add the following dependency to your app level `build.gradle` file:
+```groovy
+dependencies {
+    compile 'com.github.khan-tm:google-utilities:1.1'
+}
+```
