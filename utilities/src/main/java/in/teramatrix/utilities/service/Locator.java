@@ -15,6 +15,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.Circle;
@@ -148,7 +149,7 @@ public class Locator {
      */
     public LocationHandler locateMe(Context context) {
         locationHandler = new LocationHandler(context)
-                .setPriority(LocationHandler.PRIORITY_HIGH_ACCURACY)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(1000 * 5)
                 .setFastestInterval(1000 * 5)
                 .setLocationListener(new LocationListener() {

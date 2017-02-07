@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -28,6 +29,12 @@ import in.teramatrix.utilities.service.Locator;
 import in.teramatrix.utilities.service.PlacesExplorer;
 import in.teramatrix.utilities.service.ReverseGeocoder;
 import in.teramatrix.utilities.service.RouteDesigner;
+
+import static in.teramatrix.utilities.service.LocationHandler.Filters.ACCURACY;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.DISTANCE;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.NULL;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.SPEED;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.ZERO;
 
 /**
  * Lets see how to use Google Services Module
@@ -70,9 +77,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void fusedLocationUsage() {
         final Locator locator = new Locator(map);
         LocationHandler provider = new LocationHandler(this)
-                .setPriority(LocationHandler.PRIORITY_HIGH_ACCURACY)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(1000 * 5)
                 .setFastestInterval(1000 * 5)
+                .setFilters(NULL, ACCURACY, SPEED, ZERO, DISTANCE)
                 .setLocationListener(new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
