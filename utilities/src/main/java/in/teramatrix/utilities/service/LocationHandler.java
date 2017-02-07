@@ -104,30 +104,6 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      */
     public static final int REQUEST_LOCATION = 98;
 
-    /**
-     * Used with setPriority(int) to request the most accurate locations available.
-     * This will return the finest location available.
-     */
-    //public static final int PRIORITY_HIGH_ACCURACY = 100;
-
-    /**
-     * Used with setPriority(int) to request "block" level accuracy.
-     * Block level accuracy is considered to be about 100 meter accuracy. Using a coarse accuracy such as this often consumes less power.
-     */
-    //public static final int PRIORITY_BALANCED_POWER_ACCURACY = 102;
-
-    /**
-     * Used with setPriority(int) to request "city" level accuracy.
-     * City level accuracy is considered to be about 10km accuracy. Using a coarse accuracy such as this often consumes less power.
-     */
-    //public static final int PRIORITY_LOW_POWER = 104;
-
-    /**
-     * Used with setPriority(int) to request the best accuracy possible with zero additional power consumption.
-     * No locations will be returned unless a different client has requested location updates in which case this request will act as a passive listener to those locations.
-     */
-    //public static final int PRIORITY_NO_POWER = 105;
-
     public LocationHandler(Context context) {
         this.context = context;
         //Default Settings
