@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import in.teramatrix.utilities.model.Address;
 import in.teramatrix.utilities.model.Distance;
 import in.teramatrix.utilities.model.Place;
 import in.teramatrix.utilities.model.TravelMode;
@@ -25,6 +26,7 @@ import in.teramatrix.utilities.service.Geocoder;
 import in.teramatrix.utilities.service.LocationHandler;
 import in.teramatrix.utilities.service.Locator;
 import in.teramatrix.utilities.service.PlacesExplorer;
+import in.teramatrix.utilities.service.ReverseGeocoder;
 import in.teramatrix.utilities.service.RouteDesigner;
 
 /**
@@ -57,11 +59,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Geocoder geocoder = new Geocoder();
-        geocoder.setResponseListener(new Geocoder.GeocodingListener() {
+        ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
+        reverseGeocoder.setResponseListener(new ReverseGeocoder.ReverseGeocodingListener() {
             @Override
-            public void onRequestCompleted(String json, LatLng latLng) {
-                // Returned JSON response and LatLng object
+            public void onRequestCompleted(String json, Address address) {
+                // Returned JSON response and Address object
             }
 
             @Override
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // handle exception here
             }
         });
-        geocoder.execute();
+        reverseGeocoder.execute(new LatLng(26.896079, 75.744542));
     }
 
     @Override

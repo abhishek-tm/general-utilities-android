@@ -37,9 +37,7 @@ dependencies {
 }
 ```
 
-### Geo Coder
-
-Using this library Geocoding can be done synchronously as following…
+### Geocoder
 
 ```java
 Geocoder geocoder = new Geocoder();
@@ -56,6 +54,25 @@ geocoder.setResponseListener(new Geocoder.GeocodingListener() {
 });
 geocoder.execute("New Delhi, India");
 ```
+
+### Reverse Geocoder
+
+```java
+ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
+reverseGeocoder.setResponseListener(new ReverseGeocoder.ReverseGeocodingListener() {
+    @Override
+    public void onRequestCompleted(String json, Address address) {
+        // Returned JSON response and Address object
+    }
+
+    @Override
+    public void onRequestFailure(Exception e) {
+        // handle exception here
+    }
+});
+reverseGeocoder.execute(new LatLng(26.896079, 75.744542));
+```
+
 
 ### Licence
 
