@@ -5,7 +5,7 @@ Examples of these include Search, Gmail, Translate or Google Maps. Third-party a
 
 In this module, we've included following APIs...
 
-* <a href="https://developers.google.com/maps/documentation/geocoding/intro#BYB">Geo Coding</a>
+* [Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#BYB)
 * <a href="https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding">Reverse Geo Coding</a>
 * <a href="https://developers.google.com/places/place-id#example-using-the-places-api-web-service">Places API</a>
 * <a href="https://developers.google.com/maps/documentation/directions/start">Directions API</a>
