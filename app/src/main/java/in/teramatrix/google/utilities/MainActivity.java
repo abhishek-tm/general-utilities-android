@@ -91,14 +91,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setFillColor("#3273b7ff")
                 .setStrokeColor("#4487f2");
         locator.locateMe(this);
-
-        new LocationHandler(this)
-            .setLocationListener(new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                // Get the best known location
-            }
-        }).start();
     }
 
     //Tested
