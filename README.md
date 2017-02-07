@@ -59,6 +59,8 @@ geocoder.execute("New Delhi, India");
 ```
 
 ### Reverse Geocoder
+Reverse geocoding is the process of converting geographic coordinates into a human-readable address.
+Just pass `LatLng` object to `execute()` method, it will publish result in `onRequestCompleted()`.
 
 ```java
 ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
@@ -77,6 +79,9 @@ reverseGeocoder.execute(new LatLng(26.896079, 75.744542));
 ```
 
 ### Places Explorer
+The Google Places API for Android provides your app with rich information about places, including the place's name and address, the geographical location specified as
+latitude/longitude coordinates, the type of place (such as night club, pet store, museum), and more.
+A browser key is needed to call this api, so you have to supply it. Browser key can be obtained from Google Developer Console. And put all the places type in `explore()` method.
 
 ```java
 PlacesExplorer explorer = new PlacesExplorer()
