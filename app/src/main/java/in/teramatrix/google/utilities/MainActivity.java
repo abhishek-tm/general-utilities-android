@@ -39,14 +39,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap map;
 
-    private final String TRACKING_ID    = "UA-72960268-7";
+    private final String TRACKING_ID = "UA-72960268-7";
 
-    private final String CLIENT_ID      = "gme-teramatrixtechnologies";
-    private final String CRYPTO_KEY     = "XO8V3tNa30yrEDOtQ4NjN2WoOQg=";
+    private final String CLIENT_ID = "gme-teramatrixtechnologies";
+    private final String CRYPTO_KEY = "XO8V3tNa30yrEDOtQ4NjN2WoOQg=";
 
-    private final String BROWSER_KEY    = "AIzaSyBkmDhuXJup54D2y1fdYiwwvcLxj5u0oqk";
-    private final String ANDROID_KEY    = "AIzaSyCyYBTJQBRYo_qlcIV9sqhJ45MfCr4LrQQ";
-    private final String SERVER_KEY     = "AIzaSyBq0oOyt8KzHBpg0whNtHHPSf-Et9HPNDk";
+    private final String BROWSER_KEY = "AIzaSyBkmDhuXJup54D2y1fdYiwwvcLxj5u0oqk";
+    private final String ANDROID_KEY = "AIzaSyCyYBTJQBRYo_qlcIV9sqhJ45MfCr4LrQQ";
+    private final String SERVER_KEY = "AIzaSyBq0oOyt8KzHBpg0whNtHHPSf-Et9HPNDk";
 
 
     @Override
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //Tested
     private void callRouteDesignerDirect() {
-        DistanceCalculator calculator = new DistanceCalculator()
+        new DistanceCalculator()
                 .setOrigins("Ajmer, Rajasthan")
                 .setServerKey(SERVER_KEY)
                 .setResponseListener(new DistanceCalculator.DistanceListener() {
@@ -129,8 +129,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onRequestFailure(Exception e) {
                         Log.e("DISTANCE", e.getMessage());
                     }
-                });
-        calculator.execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
+                }).execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
 
         RouteDesigner designer = new RouteDesigner(this, map)
                 .setSensor(false)
@@ -143,10 +142,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setUpperLayer(new PolylineOptions().width(5).color(Color.parseColor("#FF0000")).geodesic(true))
                 .setResponseListener(new RouteDesigner.DesignerListener() {
                     @Override
-                    public void onRequestCompleted(String json, final Polyline[] polylines) {}
+                    public void onRequestCompleted(String json, final Polyline[] polylines) {
+                    }
 
                     @Override
-                    public void onRequestFailure(Exception e) {}
+                    public void onRequestFailure(Exception e) {
+                    }
                 });
 
         designer.design(new LatLng(25.991247, 75.664649));
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //Tested
     private void callPlacesExplorerDirect() {
-        PlacesExplorer explorer = new PlacesExplorer()
+        new PlacesExplorer()
                 .setKey(BROWSER_KEY)
                 .setLocation(new LatLng(26.4498954, 74.6399163))
                 .setResponseListener(new PlacesExplorer.PlaceExplorerListener() {
@@ -167,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onRequestFailure(Exception e) {
 
                     }
-                });
-        explorer.explore("bank", "atm");
+                }).explore("bank", "atm");
     }
 }

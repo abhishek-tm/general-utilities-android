@@ -7,7 +7,7 @@ In this module, we've included following APIs...
 
 * [Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#BYB)
 * [Reverse Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding)
-* [Places API] (https://developers.google.com/places/place-id#example-using-the-places-api-web-service)
+* [Places API] (https://developers.google.com/places/)
 * [Directions API] (https://developers.google.com/maps/documentation/directions/start)
 * [Distance Matrix API] (https://developers.google.com/maps/documentation/distance-matrix/intro#Introduction)
 * [Fused Location Provider Api] (https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderApi#top_of_page)
@@ -84,7 +84,7 @@ latitude/longitude coordinates, the type of place (such as night club, pet store
 A browser key is needed to call this api, so you have to supply it. Browser key can be obtained from Google Developer Console. And put all the places type in `explore()` method.
 
 ```java
-PlacesExplorer explorer = new PlacesExplorer()
+new PlacesExplorer()
     .setKey(BROWSER_KEY)
     .setLocation(new LatLng(26.4498954, 74.6399163))
     .setResponseListener(new PlacesExplorer.PlaceExplorerListener() {
@@ -98,8 +98,7 @@ PlacesExplorer explorer = new PlacesExplorer()
         public void onRequestFailure(Exception e) {
             // handle exception here
         }
-});
-explorer.explore("bank", "atm");
+    }).explore("bank", "atm");
 ```
 
 ### Route Designer
@@ -114,7 +113,7 @@ new RouteDesigner(this, map)
 ### Distance Calculator
 
 ```java
-DistanceCalculator calculator = new DistanceCalculator()
+new DistanceCalculator()
     .setOrigins("Ajmer, Rajasthan")
     .setServerKey(SERVER_KEY)
     .setResponseListener(new DistanceCalculator.DistanceListener() {
@@ -127,8 +126,7 @@ DistanceCalculator calculator = new DistanceCalculator()
         public void onRequestFailure(Exception e) {
             Log.e("DISTANCE", e.getMessage());
         }
-});
-calculator.execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
+    }).execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
 ```
 
 ### Licence
