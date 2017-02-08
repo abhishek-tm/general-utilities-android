@@ -7,7 +7,7 @@ In this module, we've included following APIs...
 
 * [Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#BYB)
 * [Reverse Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding)
-* [Places API] (https://developers.google.com/places/place-id#example-using-the-places-api-web-service)
+* [Places API] (https://developers.google.com/places/)
 * [Directions API] (https://developers.google.com/maps/documentation/directions/start)
 * [Distance Matrix API] (https://developers.google.com/maps/documentation/distance-matrix/intro#Introduction)
 * [Fused Location Provider Api] (https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderApi#top_of_page)
@@ -33,13 +33,14 @@ allprojects {
 And add the following dependency to your app level `build.gradle` file:
 ```groovy
 dependencies {
-    compile 'com.github.abhishektm:google-utilities:1.1'
+    compile 'com.github.abhishektm:google-utilities:1.0.0'
 }
 ```
 
-### Geo Coder
-
-Using this library Geocoding can be done synchronously as following…
+### Geocoder
+Geocoding is the process of converting addresses (like "1600 Amphitheatre Parkway, Mountain View, CA") into geographic coordinates (like latitude 37.423021 and longitude -122.083739),
+which you can use to place markers on a map, or position the map.
+Just pass your address to `execute()` method, it will publish result in `onRequestCompleted()`.
 
 ```java
 Geocoder geocoder = new Geocoder();
@@ -57,16 +58,92 @@ geocoder.setResponseListener(new Geocoder.GeocodingListener() {
 geocoder.execute("New Delhi, India");
 ```
 
-### Licence
+### Reverse Geocoder
+Reverse geocoding is the process of converting geographic coordinates into a human-readable address.
+Just pass `LatLng` object to `execute()` method, it will publish result in `onRequestCompleted()`.
 
-> Licensed under the Apache License, Version 2.0 (the "License");
-> you may not use this work except in compliance with the License.
-> You may obtain a copy of the License in the LICENSE file, or at:
->
->  [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
->
-> Unless required by applicable law or agreed to in writing, software
-> distributed under the License is distributed on an "AS IS" BASIS,
-> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-> See the License for the specific language governing permissions and
-> limitations under the License.
+```java
+ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
+reverseGeocoder.setResponseListener(new ReverseGeocoder.ReverseGeocodingListener() {
+    @Override
+    public void onRequestCompleted(String json, Address address) {
+        // Returned JSON response and Address object
+    }
+
+    @Override
+    public void onRequestFailure(Exception e) {
+        // handle exception here
+    }
+});
+reverseGeocoder.execute(new LatLng(26.896079, 75.744542));
+```
+
+### Places Explorer
+The Google Places API for Android provides your app with rich information about places, including the place's name and address, the geographical location specified as
+latitude/longitude coordinates, the type of place (such as night club, pet store, museum), and more.
+A browser key is needed to call this api, so you have to supply it. Browser key can be obtained from Google Developer Console. And put all the places type in `explore()` method.
+
+```java
+new PlacesExplorer()
+    .setKey(BROWSER_KEY)
+    .setLocation(new LatLng(26.4498954, 74.6399163))
+    .setResponseListener(new PlacesExplorer.PlaceExplorerListener() {
+        @Override
+        public void onRequestCompleted(String json, ArrayList<Place> places) {
+            // All available places as an array list of place objects
+            for (Place place : places) Log.e("PLACE", place.toString());
+        }
+
+        @Override
+        public void onRequestFailure(Exception e) {
+            // handle exception here
+        }
+    }).explore("bank", "atm");
+```
+
+### Route Designer
+To design route with polyilne on Google Map between two points, use this simple code snippet with default configuration.
+
+```java
+new RouteDesigner(this, map)
+    .setOrigin(new LatLng(26.926106, 75.792809))
+    .setDestination(new LatLng(26.449743, 74.704028))
+    .design();
+```
+
+### Distance Calculator
+The Google Maps Distance Matrix API returns information based on the recommended route between start and end points,
+as calculated by the Google Maps API, and consists of rows containing duration and distance values for each pair.
+Set origin using `setOrigin()` method and destination will be inserted in `execute()` method.
+
+In this version, origin will be single and destination may be multiple.
+
+```java
+new DistanceCalculator()
+    .setOrigins("Ajmer, Rajasthan")
+    .setServerKey(SERVER_KEY)
+    .setResponseListener(new DistanceCalculator.DistanceListener() {
+        @Override
+        public void onRequestCompleted(String json, ArrayList<Distance> distances) {
+            for (Distance distance : distances) Log.e("DISTANCE", distance.toString());
+        }
+
+        @Override
+        public void onRequestFailure(Exception e) {
+            Log.e("DISTANCE", e.getMessage());
+        }
+    }).execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
+```
+
+### Location Handler
+Using Google's Fused location API, get the best known location of the device in simple steps.
+
+```java
+new LocationHandler(this)
+    .setLocationListener(new LocationListener() {
+    @Override
+    public void onLocationChanged(Location location) {
+        // Get the best known location
+    }
+}).start();
+```

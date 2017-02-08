@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import in.teramatrix.utilities.model.Address;
 import in.teramatrix.utilities.model.Distance;
 import in.teramatrix.utilities.model.Place;
 import in.teramatrix.utilities.model.TravelMode;
@@ -25,7 +27,14 @@ import in.teramatrix.utilities.service.Geocoder;
 import in.teramatrix.utilities.service.LocationHandler;
 import in.teramatrix.utilities.service.Locator;
 import in.teramatrix.utilities.service.PlacesExplorer;
+import in.teramatrix.utilities.service.ReverseGeocoder;
 import in.teramatrix.utilities.service.RouteDesigner;
+
+import static in.teramatrix.utilities.service.LocationHandler.Filters.ACCURACY;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.DISTANCE;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.NULL;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.SPEED;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.ZERO;
 
 /**
  * Lets see how to use Google Services Module
@@ -37,14 +46,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap map;
 
-    private final String TRACKING_ID    = "UA-72960268-7";
+    private final String TRACKING_ID = "UA-72960268-7";
 
-    private final String CLIENT_ID      = "gme-teramatrixtechnologies";
-    private final String CRYPTO_KEY     = "XO8V3tNa30yrEDOtQ4NjN2WoOQg=";
+    private final String CLIENT_ID = "gme-teramatrixtechnologies";
+    private final String CRYPTO_KEY = "XO8V3tNa30yrEDOtQ4NjN2WoOQg=";
 
-    private final String BROWSER_KEY    = "AIzaSyBkmDhuXJup54D2y1fdYiwwvcLxj5u0oqk";
-    private final String ANDROID_KEY    = "AIzaSyCyYBTJQBRYo_qlcIV9sqhJ45MfCr4LrQQ";
-    private final String SERVER_KEY     = "AIzaSyBq0oOyt8KzHBpg0whNtHHPSf-Et9HPNDk";
+    private final String BROWSER_KEY = "AIzaSyBkmDhuXJup54D2y1fdYiwwvcLxj5u0oqk";
+    private final String ANDROID_KEY = "AIzaSyCyYBTJQBRYo_qlcIV9sqhJ45MfCr4LrQQ";
+    private final String SERVER_KEY = "AIzaSyBq0oOyt8KzHBpg0whNtHHPSf-Et9HPNDk";
 
 
     @Override
@@ -56,20 +65,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager manager = getSupportFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        Geocoder geocoder = new Geocoder();
-        geocoder.setResponseListener(new Geocoder.GeocodingListener() {
-            @Override
-            public void onRequestCompleted(String json, LatLng latLng) {
-                // Returned JSON response and LatLng object
-            }
-
-            @Override
-            public void onRequestFailure(Exception e) {
-                // handle exception here
-            }
-        });
-        geocoder.execute();
     }
 
     @Override
@@ -82,9 +77,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void fusedLocationUsage() {
         final Locator locator = new Locator(map);
         LocationHandler provider = new LocationHandler(this)
-                .setPriority(LocationHandler.PRIORITY_HIGH_ACCURACY)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(1000 * 5)
                 .setFastestInterval(1000 * 5)
+                .setFilters(NULL, ACCURACY, SPEED, ZERO, DISTANCE)
                 .setLocationListener(new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
@@ -128,6 +124,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //Tested
     private void callRouteDesignerDirect() {
+        new DistanceCalculator()
+                .setOrigins("Ajmer, Rajasthan")
+                .setServerKey(SERVER_KEY)
+                .setResponseListener(new DistanceCalculator.DistanceListener() {
+                    @Override
+                    public void onRequestCompleted(String json, ArrayList<Distance> distances) {
+                        for (Distance distance : distances) Log.e("DISTANCE", distance.toString());
+                    }
+
+                    @Override
+                    public void onRequestFailure(Exception e) {
+                        Log.e("DISTANCE", e.getMessage());
+                    }
+                }).execute("Jaipur, Rajasthan", "Delhi", "Mumbai");
+
         RouteDesigner designer = new RouteDesigner(this, map)
                 .setSensor(false)
                 .setAutoZoom(true)
@@ -139,10 +150,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setUpperLayer(new PolylineOptions().width(5).color(Color.parseColor("#FF0000")).geodesic(true))
                 .setResponseListener(new RouteDesigner.DesignerListener() {
                     @Override
-                    public void onRequestCompleted(String json, final Polyline[] polylines) {}
+                    public void onRequestCompleted(String json, final Polyline[] polylines) {
+                    }
 
                     @Override
-                    public void onRequestFailure(Exception e) {}
+                    public void onRequestFailure(Exception e) {
+                    }
                 });
 
         designer.design(new LatLng(25.991247, 75.664649));
@@ -164,6 +177,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     }
                 });
-        explorer.explore("mosque", "hindu_temple");
+        explorer.explore("bank", "atm");
     }
 }
