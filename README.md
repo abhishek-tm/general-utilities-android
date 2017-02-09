@@ -33,7 +33,7 @@ allprojects {
 And add the following dependency to your app level `build.gradle` file:
 ```groovy
 dependencies {
-    compile 'com.github.abhishektm:google-utilities:1.0.0'
+    compile 'com.github.abhishek-tm:google-utilities:1.0.0'
 }
 ```
 
