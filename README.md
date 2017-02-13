@@ -148,7 +148,4 @@ new LocationHandler(this)
 }).start();
 ```
 
-### [Download Current Version] (app/build/outputs/apk)
-### [Download Current Version] (blob/master/app/build/outputs/apk/app-debug.apk)
-### [Download Current Version] (/blob/master/app/build/outputs/apk/app-debug.apk)
-### [Download Current Version] (google-utilities/blob/master/app/build/outputs/apk/app-debug.apk)
+#### [Download current version…] (app/build/outputs/apk)
