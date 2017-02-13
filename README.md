@@ -14,6 +14,10 @@ In this module, we've included following APIs...
 * [Google Analytics] (https://developers.google.com/analytics/devguides/collection/android/v4/#set-up-your-project)
 * And some other features.
 
+#### Download current version
+
+[Click here to download .apk file of this version…] (app/build/outputs/apk)
+
 ### Importing the Library
 
 Simply add the following repositories to your project level `build.gradle` file:
@@ -147,5 +151,3 @@ new LocationHandler(this)
     }
 }).start();
 ```
-
-#### [Download current version…] (app/build/outputs/apk)
