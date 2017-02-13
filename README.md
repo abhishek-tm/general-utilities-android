@@ -14,7 +14,7 @@ In this module, we've included following APIs...
 * [Google Analytics] (https://developers.google.com/analytics/devguides/collection/android/v4/#set-up-your-project)
 * And some other features.
 
-#### Download current version
+### Download current version
 
 [Click here to download .apk file of this version…] (app/build/outputs/apk)
 
