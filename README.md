@@ -14,6 +14,10 @@ In this module, we've included following APIs...
 * [Google Analytics] (https://developers.google.com/analytics/devguides/collection/android/v4/#set-up-your-project)
 * And some other features.
 
+### Download .apk file
+
+[Click here to download debug version…] (app/build/outputs/apk)
+
 ### Importing the Library
 
 Simply add the following repositories to your project level `build.gradle` file:
