@@ -18,16 +18,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-import in.teramatrix.utilities.model.Address;
 import in.teramatrix.utilities.model.Distance;
 import in.teramatrix.utilities.model.Place;
 import in.teramatrix.utilities.model.TravelMode;
 import in.teramatrix.utilities.service.DistanceCalculator;
-import in.teramatrix.utilities.service.Geocoder;
 import in.teramatrix.utilities.service.LocationHandler;
 import in.teramatrix.utilities.service.Locator;
 import in.teramatrix.utilities.service.PlacesExplorer;
-import in.teramatrix.utilities.service.ReverseGeocoder;
 import in.teramatrix.utilities.service.RouteDesigner;
 
 import static in.teramatrix.utilities.service.LocationHandler.Filters.ACCURACY;
