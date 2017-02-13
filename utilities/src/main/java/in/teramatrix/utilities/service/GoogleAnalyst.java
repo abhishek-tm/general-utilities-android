@@ -14,7 +14,7 @@ import java.util.HashMap;
  * At the moment, this class is only facilitated with only four major Google Analytics services. That means class is able to
  * send screen names, actions, custom dimensions and exceptions. To execute the operation, you have to pass a {@link Tracker} in every static method.
  * Here I'm giving the definition of the method that will help you to get {@link Tracker}, just place it in {@link Application} class.
- *
+ * <p>
  * <pre>
  * private Tracker mTracker;
  * synchronized public Tracker getDefaultTracker() {
@@ -35,28 +35,25 @@ import java.util.HashMap;
  */
 @SuppressWarnings({"unused", "ConfusingArgumentToVarargsMethod"})
 public class GoogleAnalyst {
-
-    private static final String APPLICATION = "in.teramatrix.flint.driver.FlintDriver";
-
     /**
      * This method will send the name of current visible screen to the analytics.
      * <br/>
      * See <a href="https://developers.google.com/analytics/devguides/collection/android/v4/screens#overview">Screens</a>
+     *
      * @param screen name of the screen that will be on Google Analytics
      */
-    public static void sendScreenName(Application application, String screen) {
-        if (application != null) {
-            try {
-                Object object = Class.forName(APPLICATION).cast(application);
-                Method method = object.getClass().getMethod("getTracker", null);
-                Tracker tracker = (Tracker) method.invoke(object, null);
-                if (tracker != null) {
-                    tracker.setScreenName(screen);
-                    tracker.send(new HitBuilders.ScreenViewBuilder().build());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static void sendScreenName(Application app, String screen) {
+        try {
+            String name = app.getPackageManager().getPackageInfo(app.getPackageName(), 0).applicationInfo.className;
+            Object object = Class.forName(name).cast(app);
+            Method method = object.getClass().getMethod("getTracker", null);
+            Tracker tracker = (Tracker) method.invoke(object, null);
+            if (tracker != null) {
+                tracker.setScreenName(screen);
+                tracker.send(new HitBuilders.ScreenViewBuilder().build());
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -64,26 +61,26 @@ public class GoogleAnalyst {
      * This method will send action/event to the analytics.
      * <br/>
      * See <a href="https://developers.google.com/analytics/devguides/collection/android/v4/events#overview">Event Tracking</a>
+     *
      * @param category name of event/action category that will be on Google Analytics
-     * @param action name of action like what is user doing right now for example "watching gallery"
+     * @param action   name of action like what is user doing right now for example "watching gallery"
      */
-    public static void sendEvent(Application application, String category, String action) {
-        if (application != null) {
-            try {
-                Object object = Class.forName(APPLICATION).cast(application);
-                Method method = object.getClass().getMethod("getTracker", null);
-                Tracker tracker = (Tracker) method.invoke(object, null);
-                if (tracker != null) {
-                    tracker.send(
-                            new HitBuilders.EventBuilder()
-                                    .setCategory(category)
-                                    .setAction(action)
-                                    .build()
-                    );
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static void sendEvent(Application app, String category, String action) {
+        try {
+            String name = app.getPackageManager().getPackageInfo(app.getPackageName(), 0).applicationInfo.className;
+            Object object = Class.forName(name).cast(app);
+            Method method = object.getClass().getMethod("getTracker", null);
+            Tracker tracker = (Tracker) method.invoke(object, null);
+            if (tracker != null) {
+                tracker.send(
+                        new HitBuilders.EventBuilder()
+                                .setCategory(category)
+                                .setAction(action)
+                                .build()
+                );
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -102,53 +99,53 @@ public class GoogleAnalyst {
      * {@code dimensions.put("&cd4", timezone);}
      * <br/>
      * For more details : <a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cd_">Custom Dimension</a>
-     * @param screen name of the screen that will be on Google Analytics
+     *
+     * @param screen     name of the screen that will be on Google Analytics
      * @param dimensions a map of key(custom dimension index)-value pair
      */
     public static void sendCustomDimension(Application app, String screen, HashMap<String, String> dimensions) {
-        if (app != null) {
-            try {
-                Object object = Class.forName(APPLICATION).cast(app);
-                Method method = object.getClass().getMethod("getTracker", null);
-                Tracker tracker = (Tracker) method.invoke(object, null);
-                if (tracker != null) {
-                    tracker.setScreenName(screen);
+        try {
+            String name = app.getPackageManager().getPackageInfo(app.getPackageName(), 0).applicationInfo.className;
+            Object object = Class.forName(name).cast(app);
+            Method method = object.getClass().getMethod("getTracker", null);
+            Tracker tracker = (Tracker) method.invoke(object, null);
+            if (tracker != null) {
+                tracker.setScreenName(screen);
 
-                    //Adding all keys and their values to tracker
-                    ArrayList<String> keys = new ArrayList<>(dimensions.keySet());
-                    for (String key : keys)
-                        tracker.set(key, dimensions.get(key));
+                //Adding all keys and their values to tracker
+                ArrayList<String> keys = new ArrayList<>(dimensions.keySet());
+                for (String key : keys)
+                    tracker.set(key, dimensions.get(key));
 
-                    tracker.send(new HitBuilders.ScreenViewBuilder().build());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                tracker.send(new HitBuilders.ScreenViewBuilder().build());
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * This method will send {@link Exception} to google analytics.
-     * @param application current instance of {@link Application} class
-     * @param exception exception to be sent
+     *
+     * @param app current instance of {@link Application} class
+     * @param exception   exception to be sent
      */
-    public static void sendException(Application application, Exception exception) {
-        if (application != null) {
-            try {
-                Object object = Class.forName(APPLICATION).cast(application);
-                Method method = object.getClass().getMethod("getTracker", null);
-                Tracker tracker = (Tracker) method.invoke(object, null);
-                if (tracker != null) {
-                    String description = new StandardExceptionParser(application.getApplicationContext(), null)
-                            .getDescription(Thread.currentThread().getName(), exception);
-                    tracker.send(new HitBuilders.ExceptionBuilder()
-                            .setDescription(description)
-                            .setFatal(false)
-                            .build());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static void sendException(Application app, Exception exception) {
+        try {
+            String name = app.getPackageManager().getPackageInfo(app.getPackageName(), 0).applicationInfo.className;
+            Object object = Class.forName(name).cast(app);
+            Method method = object.getClass().getMethod("getTracker", null);
+            Tracker tracker = (Tracker) method.invoke(object, null);
+            if (tracker != null) {
+                String description = new StandardExceptionParser(app.getApplicationContext(), null)
+                        .getDescription(Thread.currentThread().getName(), exception);
+                tracker.send(new HitBuilders.ExceptionBuilder()
+                        .setDescription(description)
+                        .setFatal(false)
+                        .build());
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
