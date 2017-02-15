@@ -217,22 +217,26 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
             updateLastLocation(location);
         } else {
             if (has(Filters.NULL)
-                    && location == null) {
+                    && location == null
+                    && lastLocation != null) {
                 location = lastLocation;
                 location.setTime(System.currentTimeMillis());
                 log("Null Location");
             } else if (has(Filters.ZERO)
-                    && location.getLatitude() == 0
-                    || location.getLongitude() == 0) {
+                    && location != null
+                    && (location.getLatitude() == 0
+                    || location.getLongitude() == 0)) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
                 log("Zero Latitude And Longitude");
             } else if (has(Filters.ACCURACY)
-                    && location.getAccuracy() > 150) {
+                    && location != null
+                    && location.getAccuracy() > 100) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
                 log("Inaccurate Location");
             } else if (has(Filters.SIMILAR)
+                    && location != null
                     && lastLocation != null
                     && lastLocation.getLongitude() == location.getLongitude()
                     && lastLocation.getLatitude() == location.getLatitude()) {
@@ -248,6 +252,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 location.setLongitude(lastLocation.getLongitude());
                 log("Similar Location");
             } else if (has(Filters.DISTANCE)
+                    && location != null
                     && lastLocation != null) {
                 // calculating distance between new and previous location
                 double earthRadius = 6371; //in kilometers
@@ -359,7 +364,8 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
 
     public enum Filters {
         /**
-         * This filter will check whether location is null or not.
+         * This filter will check whether location is null or not. If it is null and last stored location is not null,
+         * then last location will be copied to current location.
          */
         NULL,
         /**
