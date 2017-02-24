@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.Polyline;
  * @date 3/21/2016
  */
 @SuppressWarnings("unused")
-public class GoogleMapUtilities {
+public class MapUtils {
     /**
      * This will simply remove polylines on the map
      * @param polylines which are to be removed
@@ -66,6 +66,19 @@ public class GoogleMapUtilities {
     public static Marker addMarker(GoogleMap map, LatLng position, String title, int icon) {
         return map.addMarker(new MarkerOptions()
                 .title(title)
+                .position(position)
+                .icon(BitmapDescriptorFactory.fromResource(icon)));
+    }
+
+    /**
+     * This will plot marker on the map
+     * @param map on which marker has to be plotted
+     * @param position on which position, marker has to be plotted
+     * @param icon icon id for example {@code R.drawable.ic_marker}
+     * @return marker which has been added
+     */
+    public static Marker addMarker(GoogleMap map, LatLng position, int icon) {
+        return map.addMarker(new MarkerOptions()
                 .position(position)
                 .icon(BitmapDescriptorFactory.fromResource(icon)));
     }

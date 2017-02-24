@@ -9,7 +9,6 @@ import android.graphics.Point;
 import android.location.Location;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -28,7 +27,7 @@ import java.util.TimerTask;
 
 import in.teramatrix.utilities.R;
 import in.teramatrix.utilities.util.CoordinateUtilities;
-import in.teramatrix.utilities.util.GoogleMapUtilities;
+import in.teramatrix.utilities.util.MapUtils;
 
 /**
  * This class is designed to show current location on {@link GoogleMap}. Here A {@link Marker} and a {@link Circle} will be plotted on the map.
@@ -173,7 +172,7 @@ public class Locator {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             if (marker == null) {
                 if (map != null) {
-                    marker = GoogleMapUtilities.addMarker(map, latLng, markerIcon, true);
+                    marker = MapUtils.addMarker(map, latLng, markerIcon, true);
                     if (accuracyLayer)
                     circle = map.addCircle(new CircleOptions()
                             .center(latLng)
