@@ -17,6 +17,13 @@ import com.google.android.gms.maps.model.Marker;
 import in.teramatrix.utilities.service.LocationHandler;
 import in.teramatrix.utilities.util.MapUtils;
 
+import static in.teramatrix.utilities.service.LocationHandler.Filters.ACCURACY;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.DISTANCE;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.NULL;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.RADIUS;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.SIMILAR;
+import static in.teramatrix.utilities.service.LocationHandler.Filters.ZERO;
+
 /**
  * Lets see how to use Google utilities Module. At this time, Simply implementing location listener.
  *
@@ -43,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap map) {
         this.map = map;
-        this.locationHandler = new LocationHandler(this).setLocationListener(this).start();
+        this.locationHandler = new LocationHandler(this).setLocationListener(this)
+                .setFilters(NULL, ZERO, SIMILAR, ACCURACY, RADIUS, DISTANCE).start();
     }
 
     @Override

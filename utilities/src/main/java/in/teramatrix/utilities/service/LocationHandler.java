@@ -224,6 +224,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 log("Null Location");
             } else if (has(Filters.ZERO)
                     && location != null
+                    && lastLocation != null
                     && (location.getLatitude() == 0
                     || location.getLongitude() == 0)) {
                 location.setLatitude(lastLocation.getLatitude());
@@ -231,10 +232,18 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 log("Zero Latitude And Longitude");
             } else if (has(Filters.ACCURACY)
                     && location != null
+                    && lastLocation != null
                     && location.getAccuracy() > 100) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
                 log("Inaccurate Location");
+            } else if (has(Filters.SPEED)
+                    && location != null
+                    && lastLocation != null
+                    && (location.getSpeed() * 3.6) > 150) {
+                location.setLatitude(lastLocation.getLatitude());
+                location.setLongitude(lastLocation.getLongitude());
+                log("Over speed location");
             } else if (has(Filters.SIMILAR)
                     && location != null
                     && lastLocation != null
@@ -243,32 +252,30 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 /*
                 I know the following code does not mean anything, because locations are already similar.
                 But in future, there may be a correction regarding to speed, accuracy, bearing or anything.
-                So it is just a tracked event here.
+                It is just a tracked event here.
 
                 It may be possible that we will not store new location or update new location. So
-                That kind of work can be done here
+                That kind of work can be done here.
                  */
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
                 log("Similar Location");
+            } else if (has(Filters.RADIUS)
+                    && location != null
+                    && lastLocation != null
+                    && location.getAccuracy() > location.distanceTo(lastLocation)) {
+                // if accuracy is more than distance between previous and current location
+                location.setLatitude(lastLocation.getLatitude());
+                location.setLongitude(lastLocation.getLongitude());
+                log("Inside Accuracy Radius");
             } else if (has(Filters.DISTANCE)
                     && location != null
-                    && lastLocation != null) {
-                // calculating distance between new and previous location
-                double earthRadius = 6371; //in kilometers
-                double dLat = Math.toRadians(lastLocation.getLatitude() - location.getLatitude());
-                double dLng = Math.toRadians(lastLocation.getLongitude() - location.getLongitude());
-                double x = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(location.getLatitude()))
-                        * Math.cos(Math.toRadians(lastLocation.getLatitude())) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-                double y = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
-                double distance = earthRadius * y; // km
-
+                    && lastLocation != null
+                    && location.distanceTo(lastLocation) < 150) {
                 // if accuracy is more than distance between previous and current location
-                if (location.getAccuracy() > distance * 1000) {
-                    location.setLatitude(lastLocation.getLatitude());
-                    location.setLongitude(lastLocation.getLongitude());
-                    log("Inside Accuracy Layer");
-                }
+                location.setLatitude(lastLocation.getLatitude());
+                location.setLongitude(lastLocation.getLongitude());
+                log("Very Short Distance");
             }
 
             // finally publishing the new location
@@ -362,6 +369,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      * @date 03 February 2017
      */
 
+    @SuppressWarnings("WeakerAccess")
     public enum Filters {
         /**
          * This filter will check whether location is null or not. If it is null and last stored location is not null,
@@ -386,12 +394,17 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
          */
         SIMILAR,
         /**
-         * This filter will calculate distance between current and last location. If distance is more than accuracy, then
+         * This filter will calculate distance between current and last location. If distance is more than accuracy radius, then
          * current location will be considered otherwise last location will be delivered with updated time stamp.
+         */
+        RADIUS,
+        /**
+         * New location will only be delivered if the distance from last location is more than 150 meters.
          */
         DISTANCE,
         /**
-         * Not implemented yet
+         * {@link Location} object always carry a speed value of device. It can be considered that average category vehicle
+         * will run below <b>150 km / hour</b>. This filter will discard over speed location.
          */
         SPEED,
         /**
