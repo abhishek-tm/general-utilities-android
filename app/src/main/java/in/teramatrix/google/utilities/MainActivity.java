@@ -4,10 +4,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -21,7 +20,6 @@ import static in.teramatrix.utilities.service.LocationHandler.Filters.ACCURACY;
 import static in.teramatrix.utilities.service.LocationHandler.Filters.DISTANCE;
 import static in.teramatrix.utilities.service.LocationHandler.Filters.NULL;
 import static in.teramatrix.utilities.service.LocationHandler.Filters.RADIUS;
-import static in.teramatrix.utilities.service.LocationHandler.Filters.SIMILAR;
 import static in.teramatrix.utilities.service.LocationHandler.Filters.ZERO;
 
 /**
@@ -50,8 +48,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap map) {
         this.map = map;
-        this.locationHandler = new LocationHandler(this).setLocationListener(this)
-                .setFilters(NULL, ZERO, SIMILAR, ACCURACY, RADIUS, DISTANCE).start();
+        this.locationHandler = new LocationHandler(this)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(5000)
+                .setFastestInterval(10000)
+                .setAccuracyLimit(100)
+                .setDistanceLimit(50)
+                .setSpeedLimit(120)
+                .setFilters(NULL, ZERO, ACCURACY, RADIUS, DISTANCE)
+                .setLocationListener(this)
+                .start();
     }
 
     @Override

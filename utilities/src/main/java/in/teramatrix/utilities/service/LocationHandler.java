@@ -30,10 +30,13 @@ import java.util.TimerTask;
  * Fused Location Provider Api</a> is the best way to get current location update. This class is a simple illustration of this API.
  * The main entry point for interacting with the fused location provider is {@link GoogleApiClient}.
  *
+ * One more thing to be considered, Location filters used in this program (optional), will be useful for vehicle tracking. But in the case of pedestrian,
+ * It may cause the little inaccuracy in location updates. So you can use {@link LocationHandler} without {@link Filters}.
+ *
  * @author Mohsin Khan
  * @date 15/4/2016
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<LocationSettingsResult>, LocationListener {
     /**
@@ -95,6 +98,34 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
     private long fastestInterval;
 
     /**
+     * Distance limit is used while filtering the current location according to distance with last location.
+     * Suppose distanceLimit is 100 meters, and the distance of current and last location is less than 100 meters,
+     * The current location will not be considered and last location will be delivered with updated time stamp.
+     * <br/>
+     * <b>Note : Set value in meters only.</b>
+     */
+    private int distanceLimit;
+
+    /**
+     * This parameter is also used in location filters. Over speed location will be discarded and last location will
+     * be delivered with updated timestamp.
+     * <p>
+     * It mean, if the speed of current location is more than {@code speedLimit}, then it will not be considered.
+     * <br/>
+     * <b>Note : Set value in kilometer / hour</b>
+     */
+    private int speedLimit;
+
+    /**
+     * This parameter is also used in location filters. Location filter will check the accuracy parameter of current
+     * {@link Location}, if it is more than {@code accuracyLimit}, the current location will not be considered and
+     * last location will be delivered with updated time stamp.
+     * <br/>
+     * <b>Note : Set value in meters</b>
+     */
+    private int accuracyLimit;
+
+    /**
      * A set of location filter to refine location and to deliver best location.
      */
     private Filters[] filters;
@@ -104,57 +135,167 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      */
     public static final int REQUEST_LOCATION = 98;
 
+    /**
+     * Default constructor with one single parameter that is {@link Context}. Because all the properties have been
+     * setup with their default values but {@link Context} cant be initialized.
+     *
+     * @param context Try to provide {@link Activity}'s context rather than app's context.
+     */
     public LocationHandler(Context context) {
         this.context = context;
         //Default Settings
         this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
         this.interval = 1000 * 5;
         this.fastestInterval = 1000 * 5;
+        this.speedLimit = 150;
+        this.distanceLimit = 30;
+        this.accuracyLimit = 100;
     }
 
+    /**
+     * Another constructor to initialize the {@link LocationHandler} in a single shot. But in this, User cant configure
+     * location filter's properties like {@code speedLimit} and {@code distanceLimit}.
+     *
+     * @param context         Try to provide {@link Activity}'s context rather than app's context.
+     * @param priority        Use with a priority constant such as PRIORITY_HIGH_ACCURACY. No other values are accepted.
+     * @param interval        Set the desired interval for active location updates, in milliseconds.
+     * @param fastestInterval Explicitly set the fastest interval for location updates, in milliseconds.
+     */
     public LocationHandler(Context context, int priority, long interval, long fastestInterval) {
-        this.context = context;
+        this(context);
         this.priority = priority;
         this.interval = interval;
         this.fastestInterval = fastestInterval;
+        this.distanceLimit = interval > 10000 ? 100 : interval > 5000 ? 60 : 30;
+        this.accuracyLimit = priority == LocationRequest.PRIORITY_HIGH_ACCURACY
+                || priority == LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+                ? 100 : 1000 ;
     }
 
+    /**
+     * Always try to supply {@link Activity}'s context rather than application's context. It doesn't mean {@link LocationHandler}
+     * will not work with application's context. It will work. But if you provide {@link Activity}'s context, {@link LocationHandler}
+     * will automatic request user to access gps/location service at runtime.
+     *
+     * @param context Try to provide {@link Activity}'s context rather than app's context.
+     * @return current instance of this class
+     */
     public LocationHandler setContext(Context context) {
         this.context = context;
         return this;
     }
 
+    /**
+     * New {@link Location} will be delivered in {@link LocationListener}'s {@code onLocationChanged()}.
+     *
+     * @param mLocationListener a concrete implementation of {@link LocationListener}
+     * @return current instance of this class
+     */
     public LocationHandler setLocationListener(LocationListener mLocationListener) {
         this.mLocationListener = mLocationListener;
         return this;
     }
 
+    /**
+     * Set the priority of the request.
+     * Use with a priority constant such as PRIORITY_HIGH_ACCURACY. No other values are accepted.
+     * The priority of the request is a strong hint to the LocationClient for which location sources to use.
+     * For example, PRIORITY_HIGH_ACCURACY is more likely to use GPS, and PRIORITY_BALANCED_POWER_ACCURACY is more likely to use
+     * WIFI & Cell tower positioning, but it also depends on many other factors (such as which sources are available) and
+     * is implementation dependent.
+     *
+     * @param priority according to need of {@link Location}
+     * @return current instance of this class
+     */
     public LocationHandler setPriority(int priority) {
         this.priority = priority;
         return this;
     }
 
+    /**
+     * Set the desired interval for active location updates, in milliseconds.
+     * The location client will actively try to obtain location updates for your application at this interval,
+     * so it has a direct influence on the amount of power used by your application. Choose your interval wisely.
+     *
+     * @param interval in milliseconds
+     * @return current instance of this class
+     */
     public LocationHandler setInterval(long interval) {
         this.interval = interval;
         return this;
     }
 
+    /**
+     * Explicitly set the fastest interval for location updates, in milliseconds.
+     * This controls the fastest rate at which your application will receive location updates, which might be faster than setInterval(long)
+     * in some situations (for example, if other applications are triggering location updates).
+     * This allows your application to passively acquire locations at a rate faster than it actively acquires locations, saving power.
+     *
+     * @param fastestInterval in milliseconds
+     * @return current instance of this class
+     */
     public LocationHandler setFastestInterval(long fastestInterval) {
         this.fastestInterval = fastestInterval;
         return this;
     }
 
+    /**
+     * Set a group of location filters. These are some checks implemented to avoid zigzag of poly-lines on map.
+     *
+     * @param filters an array of type {@link Filters} separated by comma
+     * @return current instance of this class
+     */
     public LocationHandler setFilters(Filters... filters) {
         this.filters = filters;
         return this;
     }
 
     /**
+     * Distance limit is used while filtering the current location according to distance with last location.
+     * Suppose distanceLimit is 100 meters, and the distance of current and last location is less than 100 meters,
+     * The current location will not be considered and last location will be delivered with updated time stamp.
+     *
+     * @param distanceLimit in meters only
+     * @return current instance of this class
+     */
+    public LocationHandler setDistanceLimit(int distanceLimit) {
+        this.distanceLimit = distanceLimit;
+        return this;
+    }
+
+    /**
+     * This parameter is also used in location filters. Over speed location will be discarded and last location will
+     * be delivered with updated timestamp. It mean, if the speed of current location is more than {@code speedLimit},
+     * then it will not be considered.
+     *
+     * @param speedLimit in kilometer / hour
+     * @return current instance of this class
+     */
+    public LocationHandler setSpeedLimit(int speedLimit) {
+        this.speedLimit = speedLimit;
+        return this;
+    }
+
+    /**
+     * This parameter is also used in location filters. Location filter will check the accuracy parameter of current
+     * {@link Location}, if it is more than {@code accuracyLimit}, the current location will not be considered and
+     * last location will be delivered with updated time stamp.
+     *
+     * @param accuracyLimit in meters
+     * @return current instance of this class
+     */
+    public LocationHandler setAccuracyLimit(int accuracyLimit) {
+        this.accuracyLimit = accuracyLimit;
+        return this;
+    }
+
+    /**
      * To start location service,  simply call this method. In this method, a {@link NullPointerException} will
      * be thrown if context or location listener is null. Because can not move ahead without these two objects.
-     *
+     * <p>
      * In this method, {@link LocationRequest} and {@link GoogleApiClient} has been initialized with the setting provided.
      * If no configuration provided then it will be loaded with default settings.
+     *
      * @return current instance of class due to builder patter
      */
     public LocationHandler start() {
@@ -184,7 +325,6 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      *
      * @return current instance of class due to builder patter and to restart the provide without configuring again.
      */
-    @SuppressWarnings("WeakerAccess")
     public LocationHandler stop() {
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -233,33 +373,17 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
             } else if (has(Filters.ACCURACY)
                     && location != null
                     && lastLocation != null
-                    && location.getAccuracy() > 100) {
+                    && location.getAccuracy() > accuracyLimit) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
                 log("Inaccurate Location");
             } else if (has(Filters.SPEED)
                     && location != null
                     && lastLocation != null
-                    && (location.getSpeed() * 3.6) > 150) {
+                    && (location.getSpeed() * 3.6) > speedLimit) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
                 log("Over speed location");
-            } else if (has(Filters.SIMILAR)
-                    && location != null
-                    && lastLocation != null
-                    && lastLocation.getLongitude() == location.getLongitude()
-                    && lastLocation.getLatitude() == location.getLatitude()) {
-                /*
-                I know the following code does not mean anything, because locations are already similar.
-                But in future, there may be a correction regarding to speed, accuracy, bearing or anything.
-                It is just a tracked event here.
-
-                It may be possible that we will not store new location or update new location. So
-                That kind of work can be done here.
-                 */
-                location.setLatitude(lastLocation.getLatitude());
-                location.setLongitude(lastLocation.getLongitude());
-                log("Similar Location");
             } else if (has(Filters.RADIUS)
                     && location != null
                     && lastLocation != null
@@ -271,8 +395,8 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
             } else if (has(Filters.DISTANCE)
                     && location != null
                     && lastLocation != null
-                    && location.distanceTo(lastLocation) < 150) {
-                // if accuracy is more than distance between previous and current location
+                    && location.distanceTo(lastLocation) < distanceLimit) {
+                // if distance between last location and current location is less than distanceLimit meters
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
                 log("Very Short Distance");
@@ -334,7 +458,8 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 try {
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
-                    if (context instanceof Activity) status.startResolutionForResult((Activity) context, REQUEST_LOCATION);
+                    if (context instanceof Activity)
+                        status.startResolutionForResult((Activity) context, REQUEST_LOCATION);
                 } catch (IntentSender.SendIntentException e) {
                     // Ignore the error.
                 }
@@ -350,6 +475,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
     /**
      * A simple method to log and toast a particular message. It is just for debugging and it will
      * be completely removed after test
+     *
      * @param msg message to log
      */
     private void log(String msg) {
@@ -368,8 +494,6 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      * @author Mohsin Khan
      * @date 03 February 2017
      */
-
-    @SuppressWarnings("WeakerAccess")
     public enum Filters {
         /**
          * This filter will check whether location is null or not. If it is null and last stored location is not null,
@@ -390,21 +514,17 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
          */
         ACCURACY,
         /**
-         * To check the current location is similar to last location.
-         */
-        SIMILAR,
-        /**
          * This filter will calculate distance between current and last location. If distance is more than accuracy radius, then
          * current location will be considered otherwise last location will be delivered with updated time stamp.
          */
         RADIUS,
         /**
-         * New location will only be delivered if the distance from last location is more than 150 meters.
+         * New location will only be delivered if the distance from last location is more than {@code distanceLimit} meters.
          */
         DISTANCE,
         /**
          * {@link Location} object always carry a speed value of device. It can be considered that average category vehicle
-         * will run below <b>150 km / hour</b>. This filter will discard over speed location.
+         * will run below {@code speedLimit}. This filter will discard over speed location.
          */
         SPEED,
         /**
