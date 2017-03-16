@@ -53,14 +53,14 @@ task javadocGenerate(type: Javadoc) {
 }
 
 task javadocPackage(dependsOn: javadocGenerate, type: Jar) {
-    baseName = "utilities"
+    baseName = "google-utilities"
     classifier = "javadoc"
     version "1.0.5"
     from tasks.javadocGenerate.destinationDir
 }
 
 task sourcePackage(type: Jar) {
-    baseName = "utilities"
+    baseName = "google-utilities"
     classifier = "sources"
     version "1.0.5"
     from android.sourceSets.main.java.srcDirs
