@@ -1,6 +1,27 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
+ext {
+    publishedGroupId = 'com.github.abhishek-tm'
+    libraryName = 'Utilities'
+    artifact = 'utilities'
+
+    libraryDescription = 'Google map utilities and services'
+
+    siteUrl = 'https://github.com/abhishek-tm/google-utilities'
+    gitUrl = 'https://github.com/abhishek-tm/google-utilities.git'
+
+    libraryVersion = '1.0.5'
+
+    developerId = 'abhishek-tm'
+    developerName = 'Abhishek Jain'
+    developerEmail = 'abhishek@teramatrix.in'
+
+    licenseName = 'The GNU General Public License, Version 3.0'
+    licenseUrl = 'http://www.gnu.org/licenses/gpl-3.0.html'
+    allLicenses = ["GPL-3.0"]
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -9,7 +30,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName libraryVersion
     }
     buildTypes {
         release {
@@ -36,4 +57,40 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.0.0'
     compile 'com.google.android.gms:play-services-analytics:10.0.0'
     compile 'com.google.android.gms:play-services-location:10.0.0'
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+task javadocGenerate(type: Javadoc) {
+    // prints javadoc outputs when info logging level set
+    logging.captureStandardError LogLevel.INFO
+
+    description = "Generates javadoc"
+    source = android.sourceSets.main.java.srcDirs
+
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    exclude '**/BuildConfig.java'
+    exclude '**/R.java'
+}
+
+task javadocPackage(dependsOn: javadocGenerate, type: Jar) {
+    baseName = artifact
+    classifier = "javadoc"
+    version libraryVersion
+    from tasks.javadocGenerate.destinationDir
+}
+
+task sourcePackage(type: Jar) {
+    baseName = artifact
+    classifier = "sources"
+    version libraryVersion
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives javadocPackage, sourcePackage
 }
