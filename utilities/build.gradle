@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.5"
+        versionName "1.0"
     }
     buildTypes {
         release {
@@ -36,38 +36,4 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.0.0'
     compile 'com.google.android.gms:play-services-analytics:10.0.0'
     compile 'com.google.android.gms:play-services-location:10.0.0'
-}
-
-// tasks for packaging source and javadocs artifacts
-
-task javadocGenerate(type: Javadoc) {
-    // prints javadoc outputs when info logging level set
-    logging.captureStandardError LogLevel.INFO
-
-    description = "Generates javadoc"
-    source = android.sourceSets.main.java.srcDirs
-
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    exclude '**/BuildConfig.java'
-    exclude '**/R.java'
-}
-
-task javadocPackage(dependsOn: javadocGenerate, type: Jar) {
-    baseName = "google-utilities"
-    classifier = "javadoc"
-    version "1.0.5"
-    from tasks.javadocGenerate.destinationDir
-}
-
-task sourcePackage(type: Jar) {
-    baseName = "google-utilities"
-    classifier = "sources"
-    version "1.0.5"
-    from android.sourceSets.main.java.srcDirs
-}
-
-//configure sign plugin
-
-artifacts {
-    archives javadocPackage, sourcePackage
 }
