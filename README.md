@@ -16,7 +16,7 @@ In this module, we've included following APIs...
 
 ### Download .apk file
 
-[Click here to download debug version…] (app/build/outputs/apk)
+[Click here to download debug version…](app/build/outputs/apk)
 
 ### Importing the Library
 
