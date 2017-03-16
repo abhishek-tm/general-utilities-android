@@ -7,7 +7,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -409,7 +408,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
     }
 
     /**
-     * Last location stored in this class will be udpated by the latest location. It is in timer because
+     * Last location stored in this class will be updated by the latest location. It is in timer because
      * last location can be used on several places in the project. If we immediatly update lastLocation
      * object then on ui (map) changes will not be reflect
      * So it should be after a few seconds.
@@ -422,7 +421,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
             public void run() {
                 lastLocation = location;
             }
-        }, 1000);
+        }, 3000);
     }
 
     /**
@@ -480,8 +479,8 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      */
     private void log(String msg) {
         try {
-            Log.e("FusedLocation", msg);
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+            Log.e(getClass().getSimpleName(), msg);
+            //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }

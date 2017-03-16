@@ -5,13 +5,13 @@ Examples of these include Search, Gmail, Translate or Google Maps. Third-party a
 
 In this module, we've included following APIs...
 
-* [Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#BYB)
-* [Reverse Geo Coding] (https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding)
-* [Places API] (https://developers.google.com/places/)
-* [Directions API] (https://developers.google.com/maps/documentation/directions/start)
-* [Distance Matrix API] (https://developers.google.com/maps/documentation/distance-matrix/intro#Introduction)
-* [Fused Location Provider Api] (https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderApi#top_of_page)
-* [Google Analytics] (https://developers.google.com/analytics/devguides/collection/android/v4/#set-up-your-project)
+* [Geo Coding](https://developers.google.com/maps/documentation/geocoding/intro#BYB)
+* [Reverse Geo Coding](https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding)
+* [Places API](https://developers.google.com/places/)
+* [Directions API](https://developers.google.com/maps/documentation/directions/start)
+* [Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/intro#Introduction)
+* [Fused Location Provider Api](https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderApi#top_of_page)
+* [Google Analytics](https://developers.google.com/analytics/devguides/collection/android/v4/#set-up-your-project)
 * And some other features.
 
 ### Download .apk file
@@ -155,8 +155,6 @@ new LocationHandler(this)
 ### License
 Copyright (C) 2017  Teramatrix Technologies Private Limited
 
-> This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-> This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
+> This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br/><br/>
+> This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br/><br/>
 > You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
