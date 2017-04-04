@@ -8,10 +8,10 @@ ext {
 
     libraryDescription = 'Google map utilities and services'
 
-    siteUrl = 'https://github.com/abhishek-tm/google-utilities'
-    gitUrl = 'https://github.com/abhishek-tm/google-utilities.git'
+    siteUrl = 'https://github.com/abhishek-tm/general-utilities-android'
+    gitUrl = 'https://github.com/abhishek-tm/general-utilities-android.git'
 
-    libraryVersion = '1.0.6'
+    libraryVersion = '1.0.7'
 
     developerId = 'abhishek-tm'
     developerName = 'Abhishek Jain'
@@ -27,7 +27,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 12
         targetSdkVersion 25
         versionCode 1
         versionName libraryVersion

@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/google-utilities.iml" filepath="$PROJECT_DIR$/google-utilities.iml" />
+      <module fileurl="file://$PROJECT_DIR$/general-utilities-android.iml" filepath="$PROJECT_DIR$/general-utilities-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/utilities/utilities.iml" filepath="$PROJECT_DIR$/utilities/utilities.iml" />
     </modules>
   </component>
