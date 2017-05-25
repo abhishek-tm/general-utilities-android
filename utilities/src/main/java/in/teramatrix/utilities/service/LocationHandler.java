@@ -28,7 +28,7 @@ import java.util.TimerTask;
  * At the time, <a href="https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderApi#top_of_page">
  * Fused Location Provider Api</a> is the best way to get current location update. This class is a simple illustration of this API.
  * The main entry point for interacting with the fused location provider is {@link GoogleApiClient}.
- *
+ * <p>
  * One more thing to be considered, Location filters used in this program (optional), will be useful for vehicle tracking. But in the case of pedestrian,
  * It may cause the little inaccuracy in location updates. So you can use {@link LocationHandler} without {@link Filters}.
  *
@@ -168,7 +168,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
         this.distanceLimit = interval > 10000 ? 100 : interval > 5000 ? 60 : 30;
         this.accuracyLimit = priority == LocationRequest.PRIORITY_HIGH_ACCURACY
                 || priority == LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-                ? 100 : 1000 ;
+                ? 100 : 1000;
     }
 
     /**
@@ -360,7 +360,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                     && lastLocation != null) {
                 location = lastLocation;
                 location.setTime(System.currentTimeMillis());
-                log("Null Location");
+                log(location.getLatitude() + "," + location.getLongitude() + " delivered due to null location");
             } else if (has(Filters.ZERO)
                     && location != null
                     && lastLocation != null
@@ -368,21 +368,21 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                     || location.getLongitude() == 0)) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
-                log("Zero Latitude And Longitude");
+                log(location.getLatitude() + "," + location.getLongitude() + " delivered due to zero latitude and longitude");
             } else if (has(Filters.ACCURACY)
                     && location != null
                     && lastLocation != null
                     && location.getAccuracy() > accuracyLimit) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
-                log("Inaccurate Location");
+                log(location.getLatitude() + "," + location.getLongitude() + " delivered due to inaccurate location");
             } else if (has(Filters.SPEED)
                     && location != null
                     && lastLocation != null
                     && (location.getSpeed() * 3.6) > speedLimit) {
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
-                log("Over speed location");
+                log(location.getLatitude() + "," + location.getLongitude() + " delivered due to over speed location");
             } else if (has(Filters.RADIUS)
                     && location != null
                     && lastLocation != null
@@ -390,7 +390,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 // if accuracy is more than distance between previous and current location
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
-                log("Inside Accuracy Radius");
+                log(location.getLatitude() + "," + location.getLongitude() + " delivered because it's inside accuracy radius");
             } else if (has(Filters.DISTANCE)
                     && location != null
                     && lastLocation != null
@@ -398,7 +398,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 // if distance between last location and current location is less than distanceLimit meters
                 location.setLatitude(lastLocation.getLatitude());
                 location.setLongitude(lastLocation.getLongitude());
-                log("Very Short Distance");
+                log(location.getLatitude() + "," + location.getLongitude() + " delivered due to very short distance");
             }
 
             // finally publishing the new location
@@ -479,8 +479,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      */
     private void log(String msg) {
         try {
-            Log.e(getClass().getSimpleName(), msg);
-            //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+            Log.d(getClass().getSimpleName(), msg);
         } catch (Exception e) {
             e.printStackTrace();
         }
