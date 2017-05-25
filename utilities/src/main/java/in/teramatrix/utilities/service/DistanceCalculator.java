@@ -3,7 +3,6 @@ package in.teramatrix.utilities.service;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -137,12 +136,11 @@ public class DistanceCalculator extends AsyncTask<String, Void, ArrayList<Distan
     @Override
     protected ArrayList<Distance> doInBackground(String ... destinations) {
         ArrayList<Distance> distances = new ArrayList<>();
-
-        //If nothing to process then returning an empty list
-        if (origins == null || destinations == null)
-            return distances;
-
         try {
+            //If nothing to process then returning an empty list
+            if (origins == null || destinations == null)
+                throw new NullPointerException("Origin or Destination can not be null");
+
             String url = buildUrl(destinations);
             Request request = new Request.Builder().url(url).build();
             json = client.newCall(request).execute().body().string();
@@ -175,14 +173,17 @@ public class DistanceCalculator extends AsyncTask<String, Void, ArrayList<Distan
                         }
                     }
                 } else {
-                    if (listener != null) listener.onRequestFailure(new CorruptedResponseException(STATUS_NOT_OK));
+                    throw new CorruptedResponseException(STATUS_NOT_OK);
                 }
             } else {
-                if (listener != null) listener.onRequestFailure(new CorruptedResponseException(NULL_RESPONSE));
+                throw new CorruptedResponseException(NULL_RESPONSE);
             }
-        } catch (IOException | JSONException | NoSuchAlgorithmException | InvalidKeyException | URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            if (listener != null) listener.onRequestFailure(e);
+            if (listener != null) {
+                listener.onRequestFailure(e);
+                listener = null;
+            }
         }
         return distances;
     }

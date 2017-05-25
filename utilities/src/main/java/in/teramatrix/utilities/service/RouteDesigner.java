@@ -11,10 +11,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +35,7 @@ import static in.teramatrix.utilities.exception.CorruptedResponseException.STATU
  * text strings (e.g. "Chicago, IL" or "Darwin, NT, Australia") or as latitude/longitude coordinates. The Directions API can return multi-part
  * directions using a series of waypoints. <strong>But this class can only process {@link LatLng} so please don't pass origin/desination or
  * waypoints as string.</strong>
+ *
  * @author Mohsin Khan
  * @date 1/5/2016
  */
@@ -238,17 +237,18 @@ public class RouteDesigner extends AsyncTask<LatLng, Void, Polyline[]> {
                     });
                 } else {
                     //If Google's API status is not ok
-                    if (listener != null)
-                        listener.onRequestFailure(new CorruptedResponseException(STATUS_NOT_OK));
+                    throw new CorruptedResponseException(STATUS_NOT_OK);
                 }
             } else {
                 //If response is not successful
-                if (listener != null)
-                    listener.onRequestFailure(new CorruptedResponseException(NULL_RESPONSE));
+                throw new CorruptedResponseException(NULL_RESPONSE);
             }
-        } catch (IOException | JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            if (listener != null) listener.onRequestFailure(e);
+            if (listener != null) {
+                listener.onRequestFailure(e);
+                listener = null;
+            }
         }
         return polylines;
     }

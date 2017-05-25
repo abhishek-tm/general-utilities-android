@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import in.teramatrix.utilities.ResponseListener;
@@ -26,6 +25,7 @@ import static in.teramatrix.utilities.exception.CorruptedResponseException.STATU
  * This class is structured to use Google's Places API using Builder Pattern. Google Places Api will find the places around the location
  * you passed in the api parameters. Although Places API has more features but this class is only constructed to explore places around a particular location.
  * Full description : <a href="https://developers.google.com/places/web-service/search">Google Places API Web Service</a>
+ *
  * @author Mohsin Khan
  * @date 1/5/2016
  */
@@ -173,17 +173,18 @@ public class PlacesExplorer extends AsyncTask<String, Void, ArrayList<Place>> {
                     }
                 } else {
                     //If Google's API status is not ok
-                    if (listener != null)
-                        listener.onRequestFailure(new CorruptedResponseException(STATUS_NOT_OK));
+                    throw new CorruptedResponseException(STATUS_NOT_OK);
                 }
             } else {
                 //If response is not successful
-                if (listener != null)
-                    listener.onRequestFailure(new CorruptedResponseException(NULL_RESPONSE));
+                throw new CorruptedResponseException(NULL_RESPONSE);
             }
-        } catch (IOException | JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            if (listener != null) listener.onRequestFailure(e);
+            if (listener != null) {
+                listener.onRequestFailure(e);
+                listener = null;
+            }
         }
         return places;
     }

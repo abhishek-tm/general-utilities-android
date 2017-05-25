@@ -5,10 +5,7 @@ import android.os.AsyncTask;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 import in.teramatrix.utilities.ResponseListener;
 import in.teramatrix.utilities.exception.CorruptedResponseException;
@@ -74,17 +71,20 @@ public class Geocoder extends AsyncTask<String, Void, LatLng> {
                         JSONObject location = data.getJSONObject("geometry").getJSONObject("location");
                         geocoded = new LatLng(location.getDouble("lat"), location.getDouble("lng"));
                     } else {
-                        if (listener != null) listener.onRequestFailure(new CorruptedResponseException(EMPTY_ARRAY));
+                        throw new CorruptedResponseException(EMPTY_ARRAY);
                     }
                 } else {
-                    if (listener != null) listener.onRequestFailure(new CorruptedResponseException(STATUS_NOT_OK));
+                    throw new CorruptedResponseException(STATUS_NOT_OK);
                 }
             } else {
-                if (listener != null) listener.onRequestFailure(new CorruptedResponseException(NULL_RESPONSE));
+                throw new CorruptedResponseException(NULL_RESPONSE);
             }
-        } catch (IOException | JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            if (listener != null) listener.onRequestFailure(e);
+            if (listener != null) {
+                listener.onRequestFailure(e);
+                listener = null;
+            }
         }
         return geocoded;
     }
