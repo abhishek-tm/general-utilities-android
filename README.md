@@ -1,5 +1,5 @@
 # Google Services And Utilities
-It's a pack of some general utilities useful for almost all projects. We all need Google APIs somewhere in our projects.
+It's a pack of some general utilities useful for projects related to Geo location data. We all need Google APIs somewhere in our projects.
 Google APIs is a set of application programming interfaces (APIs) developed by Google which allow communication with Google Services and their integration to other services.
 Examples of these include Search, Gmail, Translate or Google Maps. Third-party apps can use these APIs to take advantage of or extend the functionality of the existing services.
 
@@ -37,7 +37,7 @@ allprojects {
 And add the following dependency to your app level `build.gradle` file:
 ```groovy
 dependencies {
-    compile 'com.github.abhishek-tm:general-utilities-android:1.0.8'
+    compile 'com.github.abhishek-tm:general-utilities-android:1.0.9'
 }
 ```
 
