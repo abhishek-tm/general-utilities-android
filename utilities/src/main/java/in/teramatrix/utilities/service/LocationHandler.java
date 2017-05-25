@@ -327,7 +327,8 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
     public LocationHandler stop() {
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
+            if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected())
+                mGoogleApiClient.disconnect();
         }
         return this;
     }
