@@ -53,10 +53,10 @@ buildscript {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.squareup.okhttp3:okhttp:3.8.0'
-    compile 'com.google.android.gms:play-services-plus:10.2.1'
-    compile 'com.google.android.gms:play-services-maps:10.2.1'
-    compile 'com.google.android.gms:play-services-analytics:10.2.1'
-    compile 'com.google.android.gms:play-services-location:10.2.1'
+    compile 'com.google.android.gms:play-services-plus:10.2.6'
+    compile 'com.google.android.gms:play-services-maps:10.2.6'
+    compile 'com.google.android.gms:play-services-analytics:10.2.6'
+    compile 'com.google.android.gms:play-services-location:10.2.6'
 }
 
 tasks.withType(Javadoc) {
