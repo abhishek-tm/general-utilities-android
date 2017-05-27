@@ -352,10 +352,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
 
     @Override
     public void onLocationChanged(Location location) {
-        if (filters == null) {
-            mLocationListener.onLocationChanged(location);
-            updateLastLocation(location);
-        } else {
+        if (filters != null) {
             if (has(Filters.NULL)
                     && location == null
                     && lastLocation != null) {
@@ -401,11 +398,13 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                 location.setLongitude(lastLocation.getLongitude());
                 log(location.getLatitude() + "," + location.getLongitude() + " delivered due to very short distance");
             }
-
-            // finally publishing the new location
-            mLocationListener.onLocationChanged(location);
-            updateLastLocation(location);
+        } else {
+            log(location.getLatitude() + "," + location.getLongitude() + " delivered without any filter");
         }
+
+        // finally publishing the new location
+        mLocationListener.onLocationChanged(location);
+        updateLastLocation(location);
     }
 
     /**
@@ -460,6 +459,9 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
                     // and check the result in onActivityResult().
                     if (context instanceof Activity)
                         status.startResolutionForResult((Activity) context, REQUEST_LOCATION);
+                    else if (mGoogleApiClient.isConnected())
+                        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
                 } catch (IntentSender.SendIntentException e) {
                     // Ignore the error.
                 }
