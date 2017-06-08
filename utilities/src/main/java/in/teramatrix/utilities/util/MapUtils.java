@@ -8,12 +8,9 @@ import android.view.animation.Interpolator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 
 /**
  * Class has been constructed to collect some common utilities of Google Maps for example moving or animating
@@ -23,101 +20,6 @@ import com.google.android.gms.maps.model.Polyline;
  */
 @SuppressWarnings("unused")
 public class MapUtils {
-    /**
-     * This will simply remove polylines on the map
-     * @param polylines which are to be removed
-     */
-    public static void removePolyLines(Polyline ... polylines) {
-        for (Polyline polyline : polylines)
-            polyline.remove();
-    }
-
-    /**
-     * This will plot marker on the map
-     * @param map on which marker has to be plotted
-     * @param position on which position, marker has to be plotted
-     * @return marker which has been added
-     */
-    public static Marker addMarker(GoogleMap map, LatLng position) {
-        return map.addMarker(new MarkerOptions().position(position));
-    }
-
-    /**
-     * This will plot marker on the map
-     * @param map on which marker has to be plotted
-     * @param position on which position, marker has to be plotted
-     * @param title title text for info window
-     * @return marker which has been added
-     */
-    public static Marker addMarker(GoogleMap map, LatLng position, String title) {
-        return map.addMarker(new MarkerOptions()
-                .title(title)
-                .position(position));
-    }
-
-    /**
-     * This will plot marker on the map
-     * @param map on which marker has to be plotted
-     * @param position on which position, marker has to be plotted
-     * @param title title text for info window
-     * @param icon icon id for example {@code R.drawable.ic_marker}
-     * @return marker which has been added
-     */
-    public static Marker addMarker(GoogleMap map, LatLng position, String title, int icon) {
-        return map.addMarker(new MarkerOptions()
-                .title(title)
-                .position(position)
-                .icon(BitmapDescriptorFactory.fromResource(icon)));
-    }
-
-    /**
-     * This will plot marker on the map
-     * @param map on which marker has to be plotted
-     * @param position on which position, marker has to be plotted
-     * @param icon icon id for example {@code R.drawable.ic_marker}
-     * @return marker which has been added
-     */
-    public static Marker addMarker(GoogleMap map, LatLng position, int icon) {
-        return map.addMarker(new MarkerOptions()
-                .position(position)
-                .icon(BitmapDescriptorFactory.fromResource(icon)));
-    }
-
-    /**
-     * This will plot marker on the map
-     * @param map on which marker has to be plotted
-     * @param position on which position, marker has to be plotted
-     * @param icon icon id for example {@code R.drawable.ic_marker}
-     * @param isCentered it will set anchor(0.5f, 0.5f) if true
-     * @return marker which has been added
-     */
-    public static Marker addMarker(GoogleMap map, LatLng position, int icon, boolean isCentered) {
-        return map.addMarker(new MarkerOptions()
-                .position(position)
-                .anchor((isCentered) ? 0.5f : 0f, (isCentered) ? 0.5f : 0f)
-                .icon(BitmapDescriptorFactory.fromResource(icon)));
-    }
-
-    /**
-     * This will simply animate the camera on to the position
-     * @param map Map
-     * @param position on which position the camera will be animated/moved
-     * @param zoom zoom level
-     */
-    public static void animateCamera(GoogleMap map, LatLng position, int zoom) {
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
-    }
-
-    /**
-     * This will simply move the camera on to the position
-     * @param map Map
-     * @param position on which position the camera will be moved
-     * @param zoom zoom level
-     */
-    public static void moveCamera(GoogleMap map, LatLng position, int zoom) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
-    }
-
     /**
      * Method will move camera to the group of LatLng objects with animation
      * @param map on which the camera will be animated
