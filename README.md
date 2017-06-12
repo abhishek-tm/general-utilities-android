@@ -37,7 +37,7 @@ allprojects {
 And add the following dependency to your app level `build.gradle` file:
 ```groovy
 dependencies {
-    compile 'com.github.abhishek-tm:general-utilities-android:1.1.1'
+    compile 'com.github.abhishek-tm:general-utilities-android:1.1.2'
 }
 ```
 
