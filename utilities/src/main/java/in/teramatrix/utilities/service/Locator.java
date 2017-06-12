@@ -17,17 +17,18 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import in.teramatrix.utilities.R;
-import in.teramatrix.utilities.util.CoordinateUtilities;
-import in.teramatrix.utilities.util.MapUtils;
+import in.teramatrix.utilities.util.GUtils;
 
 /**
  * This class is designed to show current location on {@link GoogleMap}. Here A {@link Marker} and a {@link Circle} will be plotted on the map.
@@ -37,6 +38,7 @@ import in.teramatrix.utilities.util.MapUtils;
  * will be used to get location and only current location will shown on the map. {@code locateMe()} will return the running instance of
  * {@link LocationHandler} so you can stop location updates anytime by calling {@code stop()} method of {@link LocationHandler} class
  * or to stop locating, just call {@code stop()} of this class. It will remove {@link Marker} and {@link Circle} also.
+ *
  * @author Mohsin Khan
  * @date 4/13/2016
  */
@@ -99,6 +101,7 @@ public class Locator {
 
     /**
      * Default constructor of the class
+     *
      * @param map on which the current location will be displayed
      */
     public Locator(GoogleMap map) {
@@ -143,6 +146,7 @@ public class Locator {
 
     /**
      * This will plot current location {@link Marker} on the {@link GoogleMap} using {@link LocationHandler}
+     *
      * @param context to initialize {@link LocationHandler}
      * @return running instance of {@link LocationHandler} to stop updates later or whenever you want.
      */
@@ -165,6 +169,7 @@ public class Locator {
      * This method will maintain a {@link Marker} and a {@link Circle} on the map. Every time a location is passed in this method,
      * and the method will remove previous {@link Marker} & {@link Circle} and plot a new {@link Marker} and {@link Circle} on the new {@link Location}
      * you passed in the parameter.
+     *
      * @param location where current location marker will be plotted
      */
     public Marker locate(Location location) {
@@ -172,17 +177,20 @@ public class Locator {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             if (marker == null) {
                 if (map != null) {
-                    marker = MapUtils.addMarker(map, latLng, markerIcon, true);
+                    marker = map.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .anchor(0.5f, 0.5f)
+                            .icon(BitmapDescriptorFactory.fromResource(markerIcon)));
                     if (accuracyLayer)
-                    circle = map.addCircle(new CircleOptions()
-                            .center(latLng)
-                            .radius(location.getAccuracy())
-                            .strokeColor(Color.parseColor(strokeColor))
-                            .strokeWidth(0.8f)
-                            .fillColor(Color.parseColor(fillColor)));
+                        circle = map.addCircle(new CircleOptions()
+                                .center(latLng)
+                                .radius(location.getAccuracy())
+                                .strokeColor(Color.parseColor(strokeColor))
+                                .strokeWidth(0.8f)
+                                .fillColor(Color.parseColor(fillColor)));
                 }
             } else {
-                if (!CoordinateUtilities.isEqual(location, recent)) {
+                if (!GUtils.isEqual(location, recent)) {
                     if (movingMarker) {
                         moveMarker(marker, latLng);
                     } else {
@@ -193,7 +201,7 @@ public class Locator {
                         marker.setRotation(recent.bearingTo(location));
                     }
 
-                    if(accuracyLayer) {
+                    if (accuracyLayer) {
                         circle.setCenter(latLng);
                         animateCircle(circle, Math.round(location.getAccuracy()));
                     }
@@ -209,6 +217,7 @@ public class Locator {
      * Android's {@link Handler}.
      * One more thing to consider that here I'm checking if new radius is just one meter up/down with the existing
      * radius then this animation will not work. It will be stable in that condition.
+     *
      * @param c circle to be animated
      * @param r new radius value
      */
@@ -238,9 +247,10 @@ public class Locator {
      * Java's {@link Timer}.
      * One more thing to consider that here I'm checking if new radius is just one meter up/down with the existing
      * radius then this animation will not work. It will be stable in that condition.
+     *
      * @param cxt context to execute on main thread
-     * @param c circle to be animated
-     * @param r new radius value
+     * @param c   circle to be animated
+     * @param r   new radius value
      */
     private void animateCircle(final Context cxt, final Circle c, final double r) {
         c.setRadius(Math.round(c.getRadius()));
@@ -254,11 +264,11 @@ public class Locator {
                 @Override
                 public void run() {
                     if (cxt != null)
-                        ((Activity)cxt).runOnUiThread(new Runnable() {
+                        ((Activity) cxt).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 c.setRadius((c.getRadius() < r) ? c.getRadius() + 1 : c.getRadius() - 1);
-                                if (c.getRadius() == r)  {
+                                if (c.getRadius() == r) {
                                     t.cancel();
                                 }
                             }
@@ -292,7 +302,8 @@ public class Locator {
 
     /**
      * Method will move marker from one location to another location smoothly.
-     * @param marker which is to be moved
+     *
+     * @param marker     which is to be moved
      * @param toPosition destination
      */
     private void moveMarker(final Marker marker, final LatLng toPosition) {

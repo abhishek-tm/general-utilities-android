@@ -19,7 +19,7 @@ import java.util.List;
 import in.teramatrix.utilities.ResponseListener;
 import in.teramatrix.utilities.exception.CorruptedResponseException;
 import in.teramatrix.utilities.model.TravelMode;
-import in.teramatrix.utilities.util.MapUtils;
+import in.teramatrix.utilities.util.GUtils;
 import in.teramatrix.utilities.util.UrlManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -260,7 +260,7 @@ public class RouteDesigner extends AsyncTask<LatLng, Void, Polyline[]> {
         if (autoZoom && polylines != null && polylines[0] != null) {
             List<LatLng> list = polylines[0].getPoints();
             if (list.size() > 0)
-            MapUtils.animateCameraToGroup(map, list.toArray(new LatLng[list.size()]));
+            GUtils.animateCameraToGroup(map, list.toArray(new LatLng[list.size()]));
         }
 
         if (listener != null) listener.onRequestCompleted(json, polylines);
