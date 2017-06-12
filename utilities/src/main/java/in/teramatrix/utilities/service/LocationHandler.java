@@ -325,10 +325,9 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
      * @return current instance of class due to builder patter and to restart the provide without configuring again.
      */
     public LocationHandler stop() {
-        if (mGoogleApiClient != null) {
+        if (mGoogleApiClient != null && (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected())) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected())
-                mGoogleApiClient.disconnect();
+            mGoogleApiClient.disconnect();
         }
         return this;
     }
@@ -346,7 +345,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
         stop();
     }
 
@@ -403,6 +402,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks, Goo
         }
 
         // finally publishing the new location
+        if (mLocationListener != null)
         mLocationListener.onLocationChanged(location);
         updateLastLocation(location);
     }
