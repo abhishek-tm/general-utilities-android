@@ -11,11 +11,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import in.teramatrix.utilities.service.LocationHandler;
-import in.teramatrix.utilities.util.MapUtils;
 
 /**
  * Lets see how to use utilities module to get the best known location
@@ -54,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         if (marker == null) {
-            marker = MapUtils.addMarker(map, latLng, R.drawable.ic_current_location);
+            marker = map.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_current_location)));
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14), 500, null);
         } else {
             marker.setPosition(latLng);
